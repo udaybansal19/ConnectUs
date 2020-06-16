@@ -8,7 +8,7 @@ const log = {
 }
 Object.freeze(log);
 
-function logger(message, type) {
+export default function logger(message, type) {
 	switch(type) {
 
 		//Error

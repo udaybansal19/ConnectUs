@@ -1,4 +1,6 @@
-function createOffer(id) {
+import logger from './logger';
+
+export function createOffer(id) {
 	const peerConnection = peers.get(id).peerConnection;
     peerConnection.createOffer(offerOptions)
 		.then((offer) => {
@@ -10,7 +12,7 @@ function createOffer(id) {
 		});
 }
 
-function createAnswer(id, offer) {
+export function createAnswer(id, offer) {
 	const peerConnection = peers.get(id).peerConnection;
     peerConnection.setRemoteDescription(offer);
 	peerConnection.createAnswer()
@@ -23,7 +25,7 @@ function createAnswer(id, offer) {
 		});
 }
 
-function manageConnection(id) {
+export function manageConnection(id) {
 
 	const peerConnection = peers.get(id).peerConnection;
 
@@ -54,3 +56,4 @@ function manageConnection(id) {
 	});
 
 }
+

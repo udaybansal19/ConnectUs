@@ -1,5 +1,8 @@
+import * as main from './Main';
+import logger from './logger';
+
 //To decode message received from signalling
-function receivedMessage(message) {
+export default function receivedMessage(message) {
     var from = message.sender;
     var data = message.data;
     var type = message.type;
@@ -20,7 +23,7 @@ function receivedMessage(message) {
 
 		case 'newUser':
 			activePeers.add(data);
-			connectTo(data);
+			main.connectTo(data);
 			break;
 
 		case 'deleteUser':
@@ -31,7 +34,7 @@ function receivedMessage(message) {
 			logger("Received offer from" + from,log.log);
 			var offer = data;
 			if (offer) {
-				acceptConnection(from, offer);
+				main.acceptConnection(from, offer);
 			}
 			break;
 

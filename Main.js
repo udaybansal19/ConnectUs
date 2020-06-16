@@ -1,3 +1,8 @@
+import {initSignalling, sendTo } from './Signalling/Signalling';
+import dataTransfer from './Signalling/RTCdataChannelSignalling';
+import {createOffer, createAnswer, manageConnection} from './rtc';
+import logger from './logger';
+
 //---Configuration and settings---//
 var wsUri = "ws://127.0.0.1:8080";
 const serverConfig = null;
@@ -39,6 +44,10 @@ var localStream;
 var activePeers = new Set();
 var peers = new Map();
 var localStreamReady = new Event('localStreamReady');
+
+//To Start Signalling on load.
+window.addEventListener('load', onLoad);
+
 //---------//
 
 
@@ -57,6 +66,10 @@ var localStreamReady = new Event('localStreamReady');
 // 	logger('navigator.getUserMedia error: ' + error, log.error);
 // }
 
+function onLoad() {
+	initSignalling();
+}
+
 function initPeer(id) {
 
 	const peerConnection = new RTCPeerConnection(serverConfig);
@@ -73,7 +86,7 @@ function initPeer(id) {
 	peers.set(id, peer);
 }
 
-function connectTo(id) {
+export function connectTo(id) {
 	logger("Connecting to" + id, log.log);
 	
 	initPeer(id);
@@ -83,7 +96,7 @@ function connectTo(id) {
 	manageConnection(id);
 }
 
-function acceptConnection(id, offer) {
+export function acceptConnection(id, offer) {
 	logger("Accepting connection from" + id, log.log);
 	
 	initPeer(id);
@@ -101,48 +114,4 @@ function disconnect() {
 	//TODO
 }
 
-function sendTo(type, data, receiver) {
-	const message = {
-		type: type,
-		sender: myUser.id,
-		receiver: receiver,
-		data: data
-	}
-	if(receiver == -1) {
-		sendViaWebsockets(message);
-	}
-	else {
-		const signallingMethod = peers.get(receiver).signallingMethod;
-		switch(signallingMethod) {
-			case 1:
-				sendViaWebsockets(message);
-				break;
-			case 2:
-				sendViaDataChannel(message);
-				break;
-			case 3:
-				//TODO: Route data through peers
-				break;
-		}
-	}
-}
 
-function sendViaWebsockets(message) {
-
-	try {
-		websocket.send(JSON.stringify(message));
-		logger("Sending " + message.type + " to " + message.receiver, log.log);
-	} catch (error) {
-		logger("Failed to communicate with server with Error" + error, log.error);
-	}
-
-}
-
-function sendViaDataChannel(message) {
-	try {
-		peers.get(message.receiver).dataChannel.send(JSON.stringify(message));
-		logger("Sending " + message.type + " to " + message.receiver, log.log);
-	} catch (error) {
-		logger("Failed to communicate with " + message.receiver + " via dataChannel with Error" + error, log.error);
-	}
-}

@@ -1,7 +1,7 @@
-//To Start Signalling on load.
-window.addEventListener('load', onLoad);
+import receivedMessage from '../transceiver';
+import logger from '../logger';
 
-function onLoad() {
+export default function startWebSocket() {
 	websocket = new WebSocket(wsUri);
 	websocket.onopen = function (evt) { onOpen(evt) };
 	websocket.onclose = function (evt) { onClose(evt) };
@@ -17,7 +17,7 @@ function onOpen(evt) {
 
 function onClose(evt) {
 	logger("Signalling Disconnected",log.info);
-	onLoad();
+	startWebSocket();
 }
 
 function onMessage(evt) {
