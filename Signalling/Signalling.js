@@ -1,12 +1,12 @@
-import startWebSocket from './socketSignalling';
-import logger from '../logger';
+import { startWebSocket, websocket } from './socketSignalling';
+import { logger, log } from '../logger';
 import {wsUri, myUser} from '../Main';
 import * as main from '../Main';
 
 export function initSignalling() {
 	startWebSocket(wsUri);
 }
-export function sendTo(type, data, receiver) {
+export default function sendTo(type, data, receiver) {
 	const message = {
 		type: type,
 		sender: myUser.id,

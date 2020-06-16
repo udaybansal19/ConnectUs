@@ -1,4 +1,5 @@
-import logger from './logger';
+import { logger, log } from './logger';
+import sendTo from './Signalling/Signalling';
 
 const offerOptions = {
 	offerToReceiveVideo: 1,
@@ -12,7 +13,7 @@ export function createOffer(peer) {
 			}).catch(error => {
 				logger("Peer connection local description error " + error, log.error);
 			});
-			sendTo('sessionDescriptionOffer', offer, id);
+			sendTo('sessionDescriptionOffer', offer, peer.id);
 		});
 }
 
@@ -25,7 +26,7 @@ export function createAnswer(peer, offer) {
 			}).catch(error => {
 				logger("Peer connection local description error " + error, log.error);
 			});
-			sendTo('sessionDescriptionAnswer', answer, id);
+			sendTo('sessionDescriptionAnswer', answer, peer.id);
 		});
 }
 
@@ -50,7 +51,7 @@ export function manageConnection(peer) {
 	//sending iceCandidate data
 	peerConnection.onicecandidate = event => {
 		if (event.candidate) {
-			sendTo('iceCandidate', event.candidate, id);
+			sendTo('iceCandidate', event.candidate, peer.id);
 		}
 	};
 
@@ -62,10 +63,10 @@ export function manageConnection(peer) {
 	peerConnection.addEventListener('connectionstatechange', event => {
 		switch(peerConnection.connectionState) {
 			case 'connected':
-				logger("WebRTC Connected with " + id, log.info);
+				logger("WebRTC Connected with " + peer.id, log.info);
 				break;
 			case 'disconnected':
-				logger("WebRTC Disonnected with " + id, log.info);
+				logger("WebRTC Disonnected with " + peer.id, log.info);
 				break;
 			default:
 				break;			

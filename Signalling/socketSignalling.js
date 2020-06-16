@@ -1,7 +1,8 @@
 import receivedMessage from '../transceiver';
-import logger from '../logger';
+import {logger, log} from '../logger';
 
-export default function startWebSocket(wsUri) {
+export var websocket;
+export function startWebSocket(wsUri) {
 	websocket = new WebSocket(wsUri);
 	websocket.onopen = function (evt) { onOpen(evt) };
 	websocket.onclose = function (evt) { onClose(evt) };

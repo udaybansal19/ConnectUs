@@ -1,5 +1,5 @@
 import * as main from './Main';
-import logger from './logger';
+import { logger, log } from './logger';
 import { myUser, activePeers } from './Main';
 
 //To decode message received from signalling

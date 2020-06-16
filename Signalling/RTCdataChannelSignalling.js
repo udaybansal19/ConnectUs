@@ -1,15 +1,15 @@
 import receivedMessage from '../transceiver';
-import logger from '../logger';
+import { logger, log } from '../logger';
 
 export default function dataTransfer(peer) {
 	const dataChannel = peer.dataChannel;
 	dataChannel.addEventListener('open', event => {
-		logger("Data Channel opened with: " + id, log.debug);
-		peer.signallingMethod = signallingMethod.dataChannel;
+		logger("Data Channel opened with: " + peer.id, log.debug);
+		peer.signallingMethod = 2;
 	});
 	
 	dataChannel.addEventListener('close', event => {
-		logger("Data Channel closed with: " + id, log.debug);
+		logger("Data Channel closed with: " + peer.id, log.debug);
 	});
 
 	dataChannel.addEventListener('message', event => {
@@ -18,5 +18,4 @@ export default function dataTransfer(peer) {
 		logger("Received" + message, log.debug);
 
 	});
-
 }

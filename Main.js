@@ -1,7 +1,7 @@
 import {initSignalling} from './Signalling/Signalling';
 import dataTransfer from './Signalling/RTCdataChannelSignalling';
 import * as RTC from './rtc';
-import logger from './logger';
+import {logger, log } from './logger';
 
 //---Configuration and settings---//
 export const wsUri = "ws://127.0.0.1:8080";

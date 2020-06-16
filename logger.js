@@ -1,5 +1,5 @@
 //Logging types and conventions
-const log = {
+export const log = {
 	error:1,
 	warn:2,
 	log:3,
@@ -8,7 +8,7 @@ const log = {
 }
 Object.freeze(log);
 
-export default function logger(message, type) {
+export function logger(message, type) {
 	switch(type) {
 
 		//Error
@@ -33,7 +33,7 @@ export default function logger(message, type) {
 
 		//Debug
 		case 5:
-			console.log(`%c ${message}`,"color:yellow");
+			//console.log(`%c ${message}`,"color:yellow");
 			break;
 
 		default:
