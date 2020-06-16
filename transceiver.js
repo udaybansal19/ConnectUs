@@ -1,5 +1,6 @@
 import * as main from './Main';
 import logger from './logger';
+import { myUser, activePeers } from './Main';
 
 //To decode message received from signalling
 export default function receivedMessage(message) {
@@ -31,27 +32,18 @@ export default function receivedMessage(message) {
 			break;
 
 		case 'sessionDescriptionOffer':
-			logger("Received offer from" + from,log.log);
 			var offer = data;
-			if (offer) {
-				main.acceptConnection(from, offer);
-			}
+			main.acceptOffer(from, offer);
 			break;
 
 		case 'sessionDescriptionAnswer':
 			var answer = data;
-			if (answer) {
-				peers.get(from).peerConnection.setRemoteDescription(answer);
-			}
+			main.acceptAnswer(from, answer);
 			break;
 
 		case 'iceCandidate':
-			peers.get(from).peerConnection.addIceCandidate(data)
-				.then(() => {
-					logger("ICE candidate added", log.log);
-				}).catch(error => {
-					logger("Ice candidate error " + error, log.error);
-				});
+			var iceCandidate = data;
+			main.addIceCandidateToPeer(from, iceCandidate);
 			break;
 
 	}

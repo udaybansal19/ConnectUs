@@ -1,8 +1,10 @@
 import startWebSocket from './socketSignalling';
 import logger from '../logger';
+import {wsUri, myUser} from '../Main';
+import * as main from '../Main';
 
 export function initSignalling() {
-	startWebSocket();
+	startWebSocket(wsUri);
 }
 export function sendTo(type, data, receiver) {
 	const message = {
@@ -15,7 +17,7 @@ export function sendTo(type, data, receiver) {
 		sendViaWebsockets(message);
 	}
 	else {
-		const signallingMethod = peers.get(receiver).signallingMethod;
+		const signallingMethod = main.getPeer(receiver).signallingMethod;
 		switch(signallingMethod) {
 			case 1:
 				sendViaWebsockets(message);
@@ -43,7 +45,7 @@ function sendViaWebsockets(message) {
 
 function sendViaDataChannel(message) {
 	try {
-		peers.get(message.receiver).dataChannel.send(JSON.stringify(message));
+		main.getPeer(message.receiver).dataChannel.send(JSON.stringify(message));
 		logger("Sending " + message.type + " to " + message.receiver, log.log);
 	} catch (error) {
 		logger("Failed to communicate with " + message.receiver + " via dataChannel with Error" + error, log.error);

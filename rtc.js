@@ -1,7 +1,11 @@
 import logger from './logger';
 
-export function createOffer(id) {
-	const peerConnection = peers.get(id).peerConnection;
+const offerOptions = {
+	offerToReceiveVideo: 1,
+};
+
+export function createOffer(peer) {
+	const peerConnection = peer.peerConnection;
     peerConnection.createOffer(offerOptions)
 		.then((offer) => {
 			peerConnection.setLocalDescription(offer).then(() => {
@@ -12,8 +16,8 @@ export function createOffer(id) {
 		});
 }
 
-export function createAnswer(id, offer) {
-	const peerConnection = peers.get(id).peerConnection;
+export function createAnswer(peer, offer) {
+	const peerConnection = peer.peerConnection;
     peerConnection.setRemoteDescription(offer);
 	peerConnection.createAnswer()
 		.then((answer) => {
@@ -25,9 +29,22 @@ export function createAnswer(id, offer) {
 		});
 }
 
-export function manageConnection(id) {
+export function acceptAnswer(peer, answer) {
+	peer.peerConnection.setRemoteDescription(answer);
+}
 
-	const peerConnection = peers.get(id).peerConnection;
+export function addIceCandidate(peer,iceCandidate) {
+	peer.peerConnection.addIceCandidate(iceCandidate)
+		.then(() => {
+			logger("ICE candidate added", log.log);
+		}).catch(error => {
+			logger("Ice candidate error " + error, log.error);
+		});
+}
+
+export function manageConnection(peer) {
+
+	const peerConnection = peer.peerConnection;
 
 	//Ice Candidate
 	//sending iceCandidate data

@@ -1,17 +1,14 @@
-import {initSignalling, sendTo } from './Signalling/Signalling';
+import {initSignalling} from './Signalling/Signalling';
 import dataTransfer from './Signalling/RTCdataChannelSignalling';
-import {createOffer, createAnswer, manageConnection} from './rtc';
+import * as RTC from './rtc';
 import logger from './logger';
 
 //---Configuration and settings---//
-var wsUri = "ws://127.0.0.1:8080";
+export const wsUri = "ws://127.0.0.1:8080";
 const serverConfig = null;
 
 var constraints = { video: true, audio: false };
 
-const offerOptions = {
-	offerToReceiveVideo: 1,
-};
 //------------------------------//
 
 //---Initialization---//
@@ -27,7 +24,7 @@ stop.disabled = true;
 //startButton.addEventListener('click', startStream);
 stopButton.addEventListener('click', disconnect);
 
-var myUser = {
+export var myUser = {
 	id: null,
 	name: 'user'
 }
@@ -40,31 +37,13 @@ const signallingMethod = {
 }
 Object.freeze(signallingMethod);
 
-var localStream;
-var activePeers = new Set();
+export var activePeers = new Set();
 var peers = new Map();
-var localStreamReady = new Event('localStreamReady');
 
 //To Start Signalling on load.
 window.addEventListener('load', onLoad);
 
 //---------//
-
-
-// function startStream() {
-// 	startButton.disabled = true;
-// 	navigator.mediaDevices.getUserMedia(constraints)
-// 		.then(gotLocalMediaStream).catch(handleLocalMediaStreamError);
-// }
-// function gotLocalMediaStream(mediaStream) {
-// 	localStream = mediaStream;
-// 	localVideo.srcObject = mediaStream;
-// 	localVideo.dispatchEvent(localStreamReady);
-// 	//TODO: Add stream to the all the rtc connection and renegotiate offers
-// }
-// function handleLocalMediaStreamError(error) {
-// 	logger('navigator.getUserMedia error: ' + error, log.error);
-// }
 
 function onLoad() {
 	initSignalling();
@@ -80,34 +59,47 @@ function initPeer(id) {
 		peerConnection: peerConnection,
 		dataChannel: null,
 		signallingMethod: signallingMethod.websockets,
-		// remoteStream: remoteStream,
-		// remoteVideo: remoteVideo
 	}
 	peers.set(id, peer);
+
+	return peer;
 }
 
 export function connectTo(id) {
 	logger("Connecting to" + id, log.log);
 	
-	initPeer(id);
-	peers.get(id).dataChannel = peers.get(id).peerConnection.createDataChannel("DataChannel");
-	dataTransfer(id);
-	createOffer(id);
-	manageConnection(id);
+	var peer = initPeer(id);
+	peer.dataChannel = peer.peerConnection.createDataChannel("DataChannel");
+	
+	dataTransfer(peer);
+	RTC.createOffer(peer);
+	RTC.manageConnection(peer);
 }
 
-export function acceptConnection(id, offer) {
+export function acceptOffer(id, offer) {
 	logger("Accepting connection from" + id, log.log);
 	
-	initPeer(id);
+	var peer = initPeer(id);
 	
-	peers.get(id).peerConnection.addEventListener('datachannel', event => {
-		peers.get(id).dataChannel = event.channel;
-		dataTransfer(id);
+	peer.peerConnection.addEventListener('datachannel', event => {
+		peer.dataChannel = event.channel;
+		dataTransfer(peer);
 	});
 
-	createAnswer(id, offer);
-	manageConnection(id,);
+	RTC.createAnswer(peer, offer);
+	RTC.manageConnection(peer);
+}
+
+export function acceptAnswer(id, answer) {
+	RTC.acceptAnswer(peers.get(id), answer);
+}
+
+export function addIceCandidateToPeer(id, iceCandidate) {
+	RTC.addIceCandidate(peers.get(id), iceCandidate);
+}
+
+export function getPeer(id) {
+	return peers.get(id);
 }
 
 function disconnect() {
