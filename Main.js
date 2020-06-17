@@ -7,35 +7,15 @@ import {logger, log } from './logger';
 export const wsUri = "ws://127.0.0.1:8080";
 const serverConfig = null;
 
-var constraints = { video: true, audio: false };
-
 //------------------------------//
 
 //---Initialization---//
-var localVideo = document.getElementById("localVideo");
-var remoteVideos = document.getElementById("video-chat");
 
-const startButton = document.getElementById('startButton');
-const stopButton = document.getElementById('stopButton');
-
-startButton.disabled = true;
-stop.disabled = true;
-
-//startButton.addEventListener('click', startStream);
-stopButton.addEventListener('click', disconnect);
 
 export var myUser = {
 	id: null,
 	name: 'user'
 }
-
-//Signalling codes
-const signallingMethod = {
-	websockets: 1,
-	dataChannel: 2,
-	routingChannel: 3 
-}
-Object.freeze(signallingMethod);
 
 export var activePeers = new Set();
 var peers = new Map();
@@ -44,6 +24,14 @@ var peers = new Map();
 window.addEventListener('load', onLoad);
 
 //---------//
+
+//Signalling codes
+const signallingMethod = {
+	websockets: 1,
+	dataChannel: 2,
+	routingChannel: 3 
+}
+Object.freeze(signallingMethod);
 
 function onLoad() {
 	initSignalling();
@@ -101,9 +89,3 @@ export function addIceCandidateToPeer(id, iceCandidate) {
 export function getPeer(id) {
 	return peers.get(id);
 }
-
-function disconnect() {
-	//TODO
-}
-
-

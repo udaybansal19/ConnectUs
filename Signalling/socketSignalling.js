@@ -12,8 +12,6 @@ export function startWebSocket(wsUri) {
 
 function onOpen(evt) {
 	logger("Signalling Connected",log.info);
-	startButton.disabled = false;
-	stopButton.disabled = false;
 }
 
 function onClose(evt) {
