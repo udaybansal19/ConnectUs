@@ -1,7 +1,7 @@
 import { startWebSocket, websocket } from './socketSignalling';
 import { logger, log } from '../logger';
-import {wsUri, myUser} from '../Main';
-import * as main from '../Main';
+import {wsUri, myUser} from '../index';
+import * as main from '../index';
 
 export function initSignalling() {
 	startWebSocket(wsUri);

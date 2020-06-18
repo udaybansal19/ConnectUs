@@ -1,6 +1,6 @@
 import * as main from './Main';
 import { logger, log } from './logger';
-import { myUser, activePeers } from './Main';
+import { myUser, activePeers } from './index';
 
 //To decode message received from signalling
 export default function receivedMessage(message) {
