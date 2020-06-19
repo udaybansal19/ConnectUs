@@ -15,7 +15,7 @@ OR
 Embed the bundled file in your html using
 
 ```
-<script>https://cdn.jsdelivr.net/npm/connectus@1.0.0./</script>
+<script src="https://cdn.jsdelivr.net/npm/connectus@1.0.0/index.min.js"></script>
 ```
 
 Embedding this package will instantly connect the user instance to the global p2p network and will let you stream audio/video or data to peers.

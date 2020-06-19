@@ -2,7 +2,7 @@
   "name": "connectus",
   "version": "1.0.2",
   "description": "Package for instantly connecting users in a global p2p network using WebRTC right from the browser",
-  "main": "index.js",
+  "main": "Src/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
