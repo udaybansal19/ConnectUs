@@ -1,4 +1,4 @@
-import * as main from './Main';
+import * as main from './index';
 import { logger, log } from './logger';
 import { myUser, activePeers } from './index';
 
