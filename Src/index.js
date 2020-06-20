@@ -4,7 +4,7 @@ import * as RTC from './rtc';
 import {logger, log } from './logger';
 
 //---Configuration and settings---//
-export const wsUri = "ws://127.0.0.1:8080";
+//export var wsUri = "ws://127.0.0.1:8080";
 const serverConfig = null;
 
 //------------------------------//
@@ -14,14 +14,13 @@ const serverConfig = null;
 
 export var myUser = {
 	id: null,
-	name: 'user'
+	name: 'user',
+	localStream: null,
+	remoteVideos: null
 }
 
 export var activePeers = new Set();
 var peers = new Map();
-
-//To Start Signalling on load.
-window.addEventListener('load', onLoad);
 
 //---------//
 
@@ -33,13 +32,17 @@ const signallingMethod = {
 }
 Object.freeze(signallingMethod);
 
-function onLoad() {
-	initSignalling();
+export function start(wsUri) {
+	initSignalling(wsUri);
 }
 
 function initPeer(id) {
 
 	const peerConnection = new RTCPeerConnection(serverConfig);
+
+	if(myUser.localStream){
+		peerConnection.addTrack(myUser.localStream.getTracks().get(0),localStream);
+	}
 	
 	var peer = {
 		id: id,
@@ -47,6 +50,8 @@ function initPeer(id) {
 		peerConnection: peerConnection,
 		dataChannel: null,
 		signallingMethod: signallingMethod.websockets,
+		remoteStream: new MediaStream(),
+		remoteVideoElement: null
 	}
 	peers.set(id, peer);
 
@@ -54,13 +59,13 @@ function initPeer(id) {
 }
 
 export function connectTo(id) {
-	logger("Connecting to" + id, log.log);
+	logger("Connecting to " + id, log.log);
 	
 	var peer = initPeer(id);
 	peer.dataChannel = peer.peerConnection.createDataChannel("DataChannel");
 	
 	dataTransfer(peer);
-	RTC.createOffer(peer);
+	//RTC.createOffer(peer);
 	RTC.manageConnection(peer);
 }
 
@@ -88,4 +93,15 @@ export function addIceCandidateToPeer(id, iceCandidate) {
 
 export function getPeer(id) {
 	return peers.get(id);
+}
+
+export function addLocalStream(tracks,localStream) {
+	myUser.localStream = localStream;
+	peers.forEach( peer => {
+		peer.peerConnection.addTrack(tracks[0],localStream);
+	});
+}
+
+export function setRemoteVideosContainer(remoteVideosContainer) {
+	myUser.remoteVideos = remoteVideosContainer;
 }

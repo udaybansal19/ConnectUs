@@ -1,5 +1,6 @@
 import { logger, log } from './logger';
 import sendTo from './Signalling/Signalling';
+import { myUser } from '.';
 
 const offerOptions = {
 	offerToReceiveVideo: 1,
@@ -57,7 +58,10 @@ export function manageConnection(peer) {
 
 	peerConnection.addEventListener("negotiationneeded", ev => {
 		logger("Negotiation Needed", log.debug);
+		createOffer(peer);
 	});
+
+
 
 	//WebRTC connection status
 	peerConnection.addEventListener('connectionstatechange', event => {
@@ -69,9 +73,37 @@ export function manageConnection(peer) {
 				logger("WebRTC Disonnected with " + peer.id, log.info);
 				break;
 			default:
+				logger("WebRTC " + peerConnection.connectionState + " with id " + peer.id, log.debug );
 				break;			
 		}
 	});
 
-}
+	//Add remote stream to DOM object at sender's side
+	peerConnection.addEventListener('track', async (event) => {
+		logger("Stream received", log.debug);
+		peer.remoteStream.addTrack(event.track, peer.remoteStream);
+		event.track.onunmute = () => {
+			logger('track unmuted', log.debug);
+			peer.remoteVideo = document.createElement("video");
+			myUser.remoteVideos.appendChild(peer.remoteVideo);
+			peer.remoteVideo.srcObject = event.streams[0];
+			peer.remoteVideo = peer.remoteStream;
+			peer.remoteVideo.autoplay = true;
+		    peer.remoteVideo.playsInline = true;
+    		peer.remoteVideo.muted = true;
+    	}
+	});
 
+	peerConnection.addEventListener("iceconnectionstatechange", ev => {
+		logger("IceConnection State changed to: " + peerConnection.iceConnectionState, log.log);
+	});
+	logger("IceConnection initial state: " + peerConnection.iceConnectionState,log.log);
+
+
+	peerConnection.addEventListener("icegatheringstatechange", ev => {
+		logger("Ice Gathering State changed to: " + peerConnection.iceGatheringState, log.log);
+	});
+	logger("Ice Gathering inital state: " + peerConnection.iceGatheringState, log.log);
+
+
+}

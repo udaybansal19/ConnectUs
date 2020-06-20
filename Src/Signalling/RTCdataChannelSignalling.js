@@ -13,7 +13,7 @@ export default function dataTransfer(peer) {
 	});
 
 	dataChannel.addEventListener('message', event => {
-		var message = JSON.parse(evt.data);
+		var message = JSON.parse(event.data);
 		receivedMessage(message);
 		logger("Received" + message, log.debug);
 

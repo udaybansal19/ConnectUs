@@ -23,7 +23,7 @@ export function logger(message, type) {
 
 		//Log
 		case 3:
-			//console.log(message);
+			console.log(message);
 			break;
 
 		//Info
@@ -33,7 +33,7 @@ export function logger(message, type) {
 
 		//Debug
 		case 5:
-			//console.log(`%c ${message}`,"color:yellow");
+			console.log(`%c ${message}`,"color:yellow");
 			break;
 
 		default:

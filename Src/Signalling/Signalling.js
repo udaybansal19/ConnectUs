@@ -1,9 +1,9 @@
 import { startWebSocket, websocket } from './socketSignalling';
 import { logger, log } from '../logger';
-import {wsUri, myUser} from '../index';
+import {myUser} from '../index';
 import * as main from '../index';
 
-export function initSignalling() {
+export function initSignalling(wsUri) {
 	startWebSocket(wsUri);
 }
 export default function sendTo(type, data, receiver) {
