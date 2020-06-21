@@ -16,6 +16,7 @@ export default function dataTransfer(peer) {
 		var message = JSON.parse(event.data);
 		receivedMessage(message);
 		logger("Received" + message, log.debug);
+		console.log(message);
 
 	});
 }

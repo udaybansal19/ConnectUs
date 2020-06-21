@@ -90,7 +90,9 @@ export function manageConnection(peer) {
 			peer.remoteVideo = peer.remoteStream;
 			peer.remoteVideo.autoplay = true;
 		    peer.remoteVideo.playsInline = true;
-    		peer.remoteVideo.muted = true;
+			peer.remoteVideo.muted = true;
+			console.log(peer.remoteStream);
+			console.log(peer.remoteStream.getTracks());
     	}
 	});
 
