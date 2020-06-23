@@ -11,6 +11,7 @@ export function createOffer(peer) {
     peerConnection.createOffer(offerOptions)
 		.then((offer) => {
 			peerConnection.setLocalDescription(offer).then(() => {
+				logger("Offer created for " + peer.id, log.log);
 			}).catch(error => {
 				logger("Peer connection local description error " + error, log.error);
 			});
@@ -57,7 +58,7 @@ export function manageConnection(peer) {
 	};
 
 	peerConnection.addEventListener("negotiationneeded", ev => {
-		logger("Negotiation Needed", log.debug);
+		logger("Negotiation Needed", log.log);
 		createOffer(peer);
 	});
 
@@ -73,26 +74,25 @@ export function manageConnection(peer) {
 				logger("WebRTC Disonnected with " + peer.id, log.info);
 				break;
 			default:
-				logger("WebRTC " + peerConnection.connectionState + " with id " + peer.id, log.debug );
+				logger("WebRTC " + peerConnection.connectionState + " with id " + peer.id, log.log );
 				break;			
 		}
 	});
 
 	//Add remote stream to DOM object at sender's side
 	peerConnection.addEventListener('track', async (event) => {
-		logger("Stream received", log.debug);
+		logger("Stream received", log.log);
 		peer.remoteStream.addTrack(event.track, peer.remoteStream);
 		event.track.onunmute = () => {
-			logger('track unmuted', log.debug);
+			logger('track unmuted', log.log);
 			peer.remoteVideo = document.createElement("video");
 			myUser.remoteVideos.appendChild(peer.remoteVideo);
-			peer.remoteVideo.srcObject = event.streams[0];
-			peer.remoteVideo = peer.remoteStream;
+			//peer.remoteVideo.srcObject = event.streams[0];
+			peer.remoteVideo.srcObject = peer.remoteStream;
 			peer.remoteVideo.autoplay = true;
 		    peer.remoteVideo.playsInline = true;
 			peer.remoteVideo.muted = true;
-			console.log(peer.remoteStream);
-			console.log(peer.remoteStream.getTracks());
+
     	}
 	});
 
