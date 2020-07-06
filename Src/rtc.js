@@ -87,7 +87,6 @@ export function manageConnection(peer) {
 			logger('track unmuted', log.log);
 			peer.remoteVideo = document.createElement("video");
 			myUser.remoteVideos.appendChild(peer.remoteVideo);
-			//peer.remoteVideo.srcObject = event.streams[0];
 			peer.remoteVideo.srcObject = peer.remoteStream;
 			peer.remoteVideo.autoplay = true;
 		    peer.remoteVideo.playsInline = true;

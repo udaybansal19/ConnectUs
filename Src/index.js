@@ -100,7 +100,6 @@ export function connectTo(id) {
 	peer.dataChannel = peer.peerConnection.createDataChannel("DataChannel");
 	
 	dataTransfer(peer);
-	//RTC.createOffer(peer);
 	RTC.manageConnection(peer);
 }
 

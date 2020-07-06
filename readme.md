@@ -19,3 +19,4 @@ Embed the bundled file in your html using
 ```
 
 Embedding this package will instantly connect the user instance to the global p2p network and will let you stream audio/video or data to peers.
+
