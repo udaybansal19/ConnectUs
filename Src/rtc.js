@@ -1,5 +1,5 @@
 import { logger, log } from './logger';
-import sendTo from './Signalling/Signalling';
+import sendTo from './networking/Signalling';
 import { myUser } from '.';
 
 const offerOptions = {

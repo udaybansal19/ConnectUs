@@ -1,7 +1,8 @@
-import {initSignalling} from './Signalling/Signalling';
-import dataTransfer from './Signalling/RTCdataChannelSignalling';
+import {initSignalling} from './networking/Signalling';
+import dataTransfer from './networking/RTCdataChannelSignalling';
 import * as RTC from './rtc';
 import {logger, log } from './logger';
+import * as table from './dht/routingTable';
 
 //---Configuration and settings---//
 //export var wsUri = "ws://127.0.0.1:8080";
@@ -55,7 +56,6 @@ export var myUser = {
 }
 
 export var activePeers = new Set();
-var peers = new Map();
 
 //---------//
 
@@ -88,7 +88,7 @@ function initPeer(id) {
 		remoteStream: new MediaStream(),
 		remoteVideoElement: null
 	}
-	peers.set(id, peer);
+	table.updateTable(peer);
 
 	return peer;
 }
@@ -106,9 +106,9 @@ export function connectTo(id) {
 export function acceptOffer(id, offer) {
 	logger("Accepting connection from " + id, log.log);
 
-	if(peers.has(id)) {
+	if(table.getPeerIndex(id) != -1) {
 
-		RTC.createAnswer(peers.get(id), offer);
+		RTC.createAnswer(table.getPeer(id), offer);
 
 	} else {
 
@@ -126,15 +126,11 @@ export function acceptOffer(id, offer) {
 }
 
 export function acceptAnswer(id, answer) {
-	RTC.acceptAnswer(peers.get(id), answer);
+	RTC.acceptAnswer(table.getPeer(id), answer);
 }
 
 export function addIceCandidateToPeer(id, iceCandidate) {
-	RTC.addIceCandidate(peers.get(id), iceCandidate);
-}
-
-export function getPeer(id) {
-	return peers.get(id);
+	RTC.addIceCandidate(table.getPeer(id), iceCandidate);
 }
 
 export function setRemoteVideosContainer(remoteVideosContainer) {
@@ -147,7 +143,8 @@ export function setRemoteVideosContainer(remoteVideosContainer) {
 export function addLocalStream(tracks,localStream) {
 	myUser.localStream = localStream;
 	myUser.localTracks = tracks;
-	peers.forEach( peer => {
+	activePeers.forEach( id => {
+		var peer = table.getPeer(id);
 		peer.peerConnection.addTrack(tracks[0],localStream);
 	});
 }

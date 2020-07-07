@@ -32,20 +32,20 @@ var id = myUser.id;
 
 var routingTable = new Array(nodeBits);
 
-function updateTable( nodeId ) {
-    var bucket = id ^ nodeId;
-    var index = routingTable[bucket].indexOf(nodeId);
+export function updateTable( peer ) {
+    var bucket = id ^ peer.id;
+    var index = findPeer(peer.id);
 
     if( index != -1) {
         
         routingTable[bucket].splice(index, 1);
-        routingTable[bucket].push(nodeId);
+        routingTable[bucket].push(peer);
 
     } else {
 
         if( routingTable[bucket].length < kBucketSize) {
 
-            routingTable[bucket].push(nodeId);
+            routingTable[bucket].push(peer);
 
         } else {
          
@@ -59,7 +59,7 @@ function updateTable( nodeId ) {
             } else {
 
                 routingTable[bucket].shift();
-                routingTable[bucket].push(nodeId);
+                routingTable[bucket].push(peer);
 
             }
 
@@ -69,7 +69,22 @@ function updateTable( nodeId ) {
 
 }
 
-function isActive( nodeId ) {
-    return protocol.ping(nodeId);
+export function getPeerIndex( peerId ) {
+
+    var bucket = id ^ peerId;
+    return routingTable[bucket].findIndex( (p) => p.id === peerId);
+
+}
+
+export function getPeer( peerId ) {
+
+    var bucket = id ^ peerId;
+    return routingTable[bucket].find( (p) => p.id === peerId);
+}
+
+function isActive( peer ) {
+
+    return protocol.ping(peer);
+
 }
 

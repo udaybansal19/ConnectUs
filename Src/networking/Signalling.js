@@ -2,6 +2,7 @@ import { startWebSocket, websocket } from './socketSignalling';
 import { logger, log } from '../logger';
 import {myUser} from '../index';
 import * as main from '../index';
+import * as table from '../dht/routingTable';
 
 export function initSignalling(wsUri) {
 	startWebSocket(wsUri);
@@ -17,7 +18,7 @@ export default function sendTo(type, data, receiver) {
 		sendViaWebsockets(message);
 	}
 	else {
-		const signallingMethod = main.getPeer(receiver).signallingMethod;
+		const signallingMethod = table.getPeer(receiver).signallingMethod;
 		switch(signallingMethod) {
 			case 1:
 				sendViaWebsockets(message);
@@ -45,7 +46,7 @@ function sendViaWebsockets(message) {
 
 function sendViaDataChannel(message) {
 	try {
-		main.getPeer(message.receiver).dataChannel.send(JSON.stringify(message));
+		table.getPeer(message.receiver).dataChannel.send(JSON.stringify(message));
 		logger("Sending " + message.type + " to " + message.receiver, log.log);
 	} catch (error) {
 		logger("Failed to communicate with " + message.receiver + " via dataChannel with Error" + error, log.error);
