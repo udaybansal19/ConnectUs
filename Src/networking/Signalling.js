@@ -7,12 +7,14 @@ export function initSignalling(wsUri) {
 	startWebSocket(wsUri);
 }
 export default function sendTo(type, data, receiver) {
-	const message = {
+	const messageObj = {
 		type: type,
 		sender: myUser.id,
 		receiver: receiver,
 		data: data
 	}
+	const message = JSON.stringify(messageObj);
+
 	if(receiver == -1) {
 		sendViaWebsockets(message);
 	}
@@ -25,9 +27,6 @@ export default function sendTo(type, data, receiver) {
 			case 2:
 				sendViaDataChannel(message);
 				break;
-			case 3:
-				//TODO: Route data through peers
-				break;
 		}
 	}
 }
@@ -35,7 +34,7 @@ export default function sendTo(type, data, receiver) {
 function sendViaWebsockets(message) {
 
 	try {
-		websocket.send(JSON.stringify(message));
+		websocket.send(message);
 		logger("Sending " + message.type + " to " + message.receiver, log.log);
 	} catch (error) {
 		logger("Failed to communicate with server with Error" + error, log.error);
@@ -45,8 +44,18 @@ function sendViaWebsockets(message) {
 
 function sendViaDataChannel(message) {
 	try {
-		table.getPeer(message.receiver).dataChannel.send(JSON.stringify(message));
-		logger("Sending " + message.type + " to " + message.receiver, log.log);
+		var peer = table.getPeer(message.receiver);
+			if(peer != -1){
+
+				peer.dataChannel.send(message);
+				logger("Sending " + message.type + " to " + message.receiver, log.log);
+				
+			} else {
+
+				table.getClosestPeer(message.receiver).dataChannel.send(message);
+				logger("Routing " + message.type + " to " + message.receiver, log.log);
+
+			}
 	} catch (error) {
 		logger("Failed to communicate with " + message.receiver + " via dataChannel with Error" + error, log.error);
 	}

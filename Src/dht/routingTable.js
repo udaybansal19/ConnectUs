@@ -31,7 +31,7 @@ export function updateTable( peer ) {
 
     } else {
 
-        if(  routingTable[bucket] == null || routingTable[bucket].length < kBucketSize) {
+        if( routingTable[bucket] == null || routingTable[bucket].length < kBucketSize ) {
 
             routingTable[bucket] = new Array();
             routingTable[bucket].push(peer);
@@ -73,6 +73,15 @@ export function getPeer( peerId ) {
     if(!routingTable[bucket])
         return -1;
     return routingTable[bucket].find( (p) => p.id === peerId);
+}
+
+export function getClosestPeer( peerId ) {
+
+    var bucket = id ^ peerId;
+    if(!routingTable[bucket])
+        return -1;
+    return routingTable[bucket][0];
+
 }
 
 function isActive( peer ) {
