@@ -15,26 +15,14 @@ var kBucketSize = 20;
 // least recently seen node at the head
 // most recently seen node at tail
 
-// if node.existsInBucket == true
-//     move node to tail //it is now most recently seen
-// else 
-//      if bucket.size < k 
-//          add node to tail
-//      else 
-//          if head.node.ping == active
-//             move head node to tail
-//             discard the node
-//          else
-//             remove head node from bucket
-//             add node to tail
-
-var id = myUser.id;
+var id;
 
 var routingTable = new Array(nodeBits);
 
 export function updateTable( peer ) {
+    id = myUser.id;
     var bucket = id ^ peer.id;
-    var index = findPeer(peer.id);
+    var index = getPeerIndex(peer.id);
 
     if( index != -1) {
         
@@ -43,8 +31,9 @@ export function updateTable( peer ) {
 
     } else {
 
-        if( routingTable[bucket].length < kBucketSize) {
+        if(  routingTable[bucket] == null || routingTable[bucket].length < kBucketSize) {
 
+            routingTable[bucket] = new Array();
             routingTable[bucket].push(peer);
 
         } else {
@@ -72,6 +61,8 @@ export function updateTable( peer ) {
 export function getPeerIndex( peerId ) {
 
     var bucket = id ^ peerId;
+    if(!routingTable[bucket])
+        return -1;
     return routingTable[bucket].findIndex( (p) => p.id === peerId);
 
 }
@@ -79,6 +70,8 @@ export function getPeerIndex( peerId ) {
 export function getPeer( peerId ) {
 
     var bucket = id ^ peerId;
+    if(!routingTable[bucket])
+        return -1;
     return routingTable[bucket].find( (p) => p.id === peerId);
 }
 

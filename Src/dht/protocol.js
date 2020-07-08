@@ -1,7 +1,7 @@
 
 
 export function ping( nodeId ) {
-    return;
+    return true;
 }
 
 export function store( nodeId ) {

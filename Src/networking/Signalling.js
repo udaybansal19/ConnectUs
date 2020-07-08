@@ -1,7 +1,6 @@
 import { startWebSocket, websocket } from './socketSignalling';
 import { logger, log } from '../logger';
 import {myUser} from '../index';
-import * as main from '../index';
 import * as table from '../dht/routingTable';
 
 export function initSignalling(wsUri) {
