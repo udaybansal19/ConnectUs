@@ -6,6 +6,7 @@
 
 import { myUser } from '../index';
 import * as protocol from './protocol';
+import { stopWebSocket } from "../networking/socketSignalling";
 
 var nodeBits = 4;
 var kBucketSize = 1;
@@ -18,6 +19,8 @@ var kBucketSize = 1;
 var id;
 
 var routingTable = new Array(nodeBits);
+export var independent = false;
+var activeBuckets = 0;
 
 export function updateTable( peer ) {
     id = myUser.id;
@@ -35,6 +38,11 @@ export function updateTable( peer ) {
 
             routingTable[bucket] = new Array();
             routingTable[bucket].push(peer);
+            activeBuckets++;
+
+            if(activeBuckets > 2) {
+                stopWebSocket();
+            }
 
         } else {
          

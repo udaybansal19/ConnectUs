@@ -1,5 +1,6 @@
 import receivedMessage from '../transceiver';
 import {logger, log} from '../logger';
+import { independent } from "../dht/routingTable";
 
 export var websocket;
 export function startWebSocket(wsUri) {
@@ -10,13 +11,19 @@ export function startWebSocket(wsUri) {
 	websocket.onerror = function (evt) { onError(evt) };
 }
 
+export function stopWebSocket() {
+	websocket.close();
+}
+
 function onOpen(evt) {
 	logger("Signalling Connected",log.info);
 }
 
 function onClose(evt) {
 	logger("Signalling Disconnected",log.info);
-	startWebSocket();
+	if(independent != true){
+		startWebSocket();
+	}
 }
 
 function onMessage(evt) {
