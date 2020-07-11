@@ -84,7 +84,7 @@ export function getClosestPeer( peerId ) {
 
 }
 
-function bucketNumber(peerId) {
+export function bucketNumber(peerId) {
     var userId = id.toString(2);
     var peerId = peerId.toString(2);
     var bucketNo = 0;

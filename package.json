@@ -4,13 +4,12 @@
   "description": "Package for instantly connecting users in a global p2p network using WebRTC right from the browser",
   "main": "Src/index.js",
   "scripts": {
-    "test": "mocha test/main.js --recursive test"
+    "test": "mocha --require babel-polyfill --require babel-register test/main.js --recursive test"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "chai": "^4.2.0",
-    "mocha": "^8.0.1"
+    "@babel/preset-env": "^7.10.4"
   },
   "dependencies": {
     "lodash": "^4.17.15"
