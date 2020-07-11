@@ -67,6 +67,8 @@ const signallingMethod = {
 }
 Object.freeze(signallingMethod);
 
+export var defaultSignallingMethod = signallingMethod.websockets;
+
 export function start(wsUri) {
 	initSignalling(wsUri);
 }
@@ -84,7 +86,7 @@ function initPeer(id) {
 		name: 'user',
 		peerConnection: peerConnection,
 		dataChannel: null,
-		signallingMethod: signallingMethod.websockets,
+		signallingMethod: defaultSignallingMethod,
 		remoteStream: new MediaStream(),
 		remoteVideoElement: null
 	}
@@ -137,6 +139,9 @@ export function setRemoteVideosContainer(remoteVideosContainer) {
 	myUser.remoteVideos = remoteVideosContainer;
 }
 
+export async function getUserId() {
+	return myUser.id;
+}
 
 //Refactor later to add p2p connection layer.
 //Data transfer Layer

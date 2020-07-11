@@ -4,7 +4,7 @@
 // TODO: Switch to a tree based approach as given in 
 // section 2.4 for handling hughly unbalanced tree and bucket spliting.
 
-import { myUser } from '../index';
+import { getUserId, defaultSignallingMethod } from '../index';
 import * as protocol from './protocol';
 import { stopWebSocket } from "../networking/socketSignalling";
 
@@ -16,14 +16,11 @@ var kBucketSize = 1;
 // least recently seen node at the head
 // most recently seen node at tail
 
-var id;
-
 var routingTable = new Array(nodeBits);
 export var independent = false;
 var activeBuckets = 0;
 
 export function updateTable( peer ) {
-    id = myUser.id;
     var bucket = bucketNumber(peer.id);
     var index = getPeerIndex(peer.id);
 
@@ -42,6 +39,7 @@ export function updateTable( peer ) {
 
             if(activeBuckets > 2) {
                 stopWebSocket();
+                defaultSignallingMethod = 2;
             }
 
         } else {
@@ -92,8 +90,8 @@ export function getClosestPeer( peerId ) {
 
 }
 
-export function bucketNumber(peerId) {
-    var userId = id.toString(2);
+export async function bucketNumber(peerId) {
+    var userId = await getUserId().toString(2);
     var peerId = peerId.toString(2);
     var bucketNo = 0;
 

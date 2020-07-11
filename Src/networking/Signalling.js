@@ -1,6 +1,6 @@
 import { startWebSocket, websocket } from './socketSignalling';
 import { logger, log } from '../logger';
-import {myUser} from '../index';
+import {myUser, defaultSignallingMethod} from '../index';
 import * as table from '../dht/routingTable';
 
 export function initSignalling(wsUri) {
@@ -19,14 +19,19 @@ export default function sendTo(type, data, receiver) {
 		sendViaWebsockets(message);
 	}
 	else {
-		const signallingMethod = table.getPeer(receiver).signallingMethod;
-		switch(signallingMethod) {
-			case 1:
-				sendViaWebsockets(message);
-				break;
-			case 2:
-				sendViaDataChannel(message);
-				break;
+		if(defaultSignallingMethod == 2) {
+			table.getPeer(receiver).signallingMethod = 2;
+			sendViaDataChannel(message);
+		} else {
+			const signallingMethod = table.getPeer(receiver).signallingMethod;
+			switch(signallingMethod) {
+				case 1:
+					sendViaWebsockets(message);
+					break;
+				case 2:
+					sendViaDataChannel(message);
+					break;
+			}
 		}
 	}
 }
