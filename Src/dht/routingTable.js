@@ -7,8 +7,8 @@
 import { myUser } from '../index';
 import * as protocol from './protocol';
 
-var nodeBits = 160;
-var kBucketSize = 20;
+var nodeBits = 4;
+var kBucketSize = 1;
 
 // make $(nodeBits) buckets with size $(kBucketSize)
 // each bucket is kept sorted according to time last seen
@@ -21,7 +21,7 @@ var routingTable = new Array(nodeBits);
 
 export function updateTable( peer ) {
     id = myUser.id;
-    var bucket = id ^ peer.id;
+    var bucket = bucketNumber(peer.id);
     var index = getPeerIndex(peer.id);
 
     if( index != -1) {
@@ -60,7 +60,7 @@ export function updateTable( peer ) {
 
 export function getPeerIndex( peerId ) {
 
-    var bucket = id ^ peerId;
+    var bucket = bucketNumber(peerId);
     if(!routingTable[bucket])
         return -1;
     return routingTable[bucket].findIndex( (p) => p.id === peerId);
@@ -69,7 +69,7 @@ export function getPeerIndex( peerId ) {
 
 export function getPeer( peerId ) {
 
-    var bucket = id ^ peerId;
+    var bucket = bucketNumber(peerId);
     if(!routingTable[bucket])
         return -1;
     return routingTable[bucket].find( (p) => p.id === peerId);
@@ -77,10 +77,22 @@ export function getPeer( peerId ) {
 
 export function getClosestPeer( peerId ) {
 
-    var bucket = id ^ peerId;
+    var bucket = bucketNumber(peerId);
     if(!routingTable[bucket])
         return -1;
     return routingTable[bucket][0];
+
+}
+
+function bucketNumber(peerId) {
+    var userId = id.toString(2);
+    var peerId = peerId.toString(2);
+    var bucketNo = 0;
+
+    while(userId[bucketNo] == peerId[bucketNo])
+        bucketNo++;
+
+    return bucketNo;
 
 }
 
