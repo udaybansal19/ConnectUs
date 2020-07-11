@@ -89,6 +89,9 @@ export function bucketNumber(peerId) {
     var peerId = peerId.toString(2);
     var bucketNo = 0;
 
+    if(userId == peerId)
+        return -1;
+
     while(userId[bucketNo] == peerId[bucketNo])
         bucketNo++;
 
