@@ -1,10 +1,13 @@
 import { logger, log } from './logger';
 import sendTo from './networking/Signalling';
-import { myUser } from '.';
+import { myUser, defaultSignallingMethod } from '.';
+import { stopWebSocket } from "./networking/socketSignalling";
 
 const offerOptions = {
 	offerToReceiveVideo: 1,
 };
+
+var activeConnections = 0;
 
 export function createOffer(peer) {
 	const peerConnection = peer.peerConnection;
@@ -69,9 +72,16 @@ export function manageConnection(peer) {
 		switch(peerConnection.connectionState) {
 			case 'connected':
 				logger("WebRTC Connected with " + peer.id, log.info);
+				activeConnections++;
+
+				if(activeConnections > 2) {
+					defaultSignallingMethod = 2;
+					stopWebSocket();
+				}
 				break;
 			case 'disconnected':
 				logger("WebRTC Disonnected with " + peer.id, log.info);
+				activeConnections--;
 				break;
 			default:
 				logger("WebRTC " + peerConnection.connectionState + " with id " + peer.id, log.log );

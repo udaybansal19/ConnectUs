@@ -5,7 +5,7 @@ import {logger, log } from './logger';
 import * as table from './dht/routingTable';
 
 //---Configuration and settings---//
-//export var wsUri = "ws://127.0.0.1:8080";
+export var wsUri = "ws://127.0.0.1:8080";
 const serverConfig = 
 {iceServers:[ {url:'stun:stun01.sipphone.com'},
 //  {url:'stun:stun.ekiga.net'},
@@ -139,8 +139,14 @@ export function setRemoteVideosContainer(remoteVideosContainer) {
 	myUser.remoteVideos = remoteVideosContainer;
 }
 
-export async function getUserId() {
-	return myUser.id;
+export function getUserId() {
+	// return myUser.id;
+	return new Promise((resolve) => {
+		while(myUser == null){
+
+		}
+		resolve(myUser.id);
+	})
 }
 
 //Refactor later to add p2p connection layer.
