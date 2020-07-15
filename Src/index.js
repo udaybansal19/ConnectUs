@@ -140,13 +140,14 @@ export function setRemoteVideosContainer(remoteVideosContainer) {
 }
 
 export function getUserId() {
-	// return myUser.id;
-	return new Promise((resolve) => {
-		while(myUser == null){
+	while(myUser == null){
 
-		}
-		resolve(myUser.id);
-	})
+	}
+	var peerHash = myUser.id.toString(2);
+	while(2 > peerHash.length){
+		peerHash = '0' + peerHash;
+	}
+	return peerHash;
 }
 
 //Refactor later to add p2p connection layer.

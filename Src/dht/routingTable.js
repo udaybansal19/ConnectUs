@@ -83,9 +83,12 @@ export function getClosestPeer( peerId ) {
 
 }
 
-export async function bucketNumber(peerId) {
-    var userId = await getUserId().toString(2);
+export function bucketNumber(peerId) {
+    var userId = getUserId().toString(2);
     var peerId = peerId.toString(2);
+    while(2 > peerId.length){
+        peerId = '0' + peerId;
+	}
     var bucketNo = 0;
 
     if(userId == peerId)
