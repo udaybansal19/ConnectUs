@@ -70,7 +70,13 @@ export function getPeer( peerId ) {
     var bucket = bucketNumber(peerId);
     if(!routingTable[bucket])
         return -1;
-    return routingTable[bucket].find( (p) => p.id === peerId);
+    var peer = routingTable[bucket].find( (p) => p.id === peerId);
+
+    if(peer == undefined){
+        return getClosestPeer( peerId );
+    }else{
+        return peer;
+    }
 
 }
 

@@ -1,6 +1,6 @@
 import { logger, log } from './logger';
 import sendTo from './networking/Signalling';
-import { myUser, defaultSignallingMethod } from '.';
+import { myUser, defaultSignallingMethod } from './index';
 import { stopWebSocket } from "./networking/socketSignalling";
 
 const offerOptions = {

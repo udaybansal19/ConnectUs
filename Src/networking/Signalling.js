@@ -23,7 +23,8 @@ export default function sendTo(type, data, receiver) {
 			table.getPeer(receiver).signallingMethod = 2;
 			sendViaDataChannel(message);
 		} else {
-			const signallingMethod = table.getPeer(receiver).signallingMethod;
+			var signallingMethod = defaultSignallingMethod;
+			
 			switch(signallingMethod) {
 				case 1:
 					sendViaWebsockets(message);
