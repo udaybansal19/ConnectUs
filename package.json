@@ -1,6 +1,6 @@
 {
   "name": "connectus",
-  "version": "1.1.0",
+  "version": "2.0.0-beta.0",
   "description": "Package for instantly connecting users in a global p2p network using WebRTC right from the browser",
   "main": "Src/index.js",
   "scripts": {
