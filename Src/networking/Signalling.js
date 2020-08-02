@@ -41,7 +41,7 @@ function sendViaWebsockets(message) {
 
 	try {
 		websocket.send(message);
-		logger("Sending " + message.type + " to " + message.receiver, log.log);
+		logger("Sending " + JSON.parse(message).type + " to " + JSON.parse(message).receiver, log.log);
 	} catch (error) {
 		logger("Failed to communicate with server with Error" + error, log.error);
 	}

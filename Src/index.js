@@ -67,7 +67,8 @@ const signallingMethod = {
 }
 Object.freeze(signallingMethod);
 
-export var defaultSignallingMethod = signallingMethod.websockets;
+export var defaultSignallingMethod;
+defaultSignallingMethod = signallingMethod.websockets;
 
 export function start(wsUri) {
 	initSignalling(wsUri);
