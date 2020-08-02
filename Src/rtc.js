@@ -24,19 +24,32 @@ export function createOffer(peer) {
 
 export function createAnswer(peer, offer) {
 	const peerConnection = peer.peerConnection;
-    peerConnection.setRemoteDescription(offer);
-	peerConnection.createAnswer()
-		.then((answer) => {
-			peerConnection.setLocalDescription(answer).then(() => {
-			}).catch(error => {
-				logger("Peer connection local description error " + error, log.error);
-			});
-			sendTo('sessionDescriptionAnswer', answer, peer.id);
+	peerConnection.setRemoteDescription(offer)
+		.then(() => {
+			peerConnection.createAnswer()
+				.then((answer) => {
+					peerConnection.setLocalDescription(answer).then(() => {
+					}).catch(error => {
+						logger("Failed to set local description: error " + error, log.error);
+					});
+					sendTo('sessionDescriptionAnswer', answer, peer.id);
+				}).catch( error => {
+					logger("Failed to create Answer" + error, log.error);
+				});
+			logger("Remote Description set", log.log);
+		}).catch((error) => {
+			logger("Failed to set remote description of " + peer.id + "with error " + error, log.error);
 		});
+	
 }
 
 export function acceptAnswer(peer, answer) {
-	peer.peerConnection.setRemoteDescription(answer);
+	peer.peerConnection.setRemoteDescription(answer)
+			.then(() => {
+				logger("Remote Description Set", log.log);
+			}).catch( error => {
+				logger("Failed to set remote description: error " + error, log.error);
+			});
 }
 
 export function addIceCandidate(peer,iceCandidate) {
