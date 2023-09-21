@@ -6,6 +6,10 @@
   "scripts": {
     "test": "mocha --require babel-polyfill --require babel-register test/main.js --recursive test"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/udaybansal19/ConnectUs"
+  },
   "author": "",
   "license": "ISC",
   "devDependencies": {},
